@@ -10,13 +10,17 @@ export default class MealForm extends Component {
   }
 
   onChange = (value) => {
-    console.log('onChange', value)
-    this.props.handleMealChange(value)
+    this.props.handleMealSelection(value)
   }
+
+  // onNumberChange = (value) => {
+  //   console.log('number', value)
+  //   this.props.handlePeopleCount(value)
+  // }
 
   render() {
 
-    const { selectedMeal, mealOptions, people } = this.props;
+    const { mealOptions } = this.props;
 
     return (
       <>
@@ -32,14 +36,14 @@ export default class MealForm extends Component {
         <InputNumber
           min={1} max={10}
           defaultValue={1}
-          // onChange={handleChange('selectedMeal')}
+          // onChange={this.onNumberChange}
         />
         <br/>
         <Button
           type='primary'
           onClick={this.continue}
         >
-          Primary
+          Next
         </Button>
       </>
     )

@@ -1,51 +1,49 @@
 import React, { Component } from 'react';
-import { Cascader, InputNumber, Button } from 'antd';
-import {dishes} from '../../src/mock-data';
+import { Cascader, Button } from 'antd';
+import { dishes } from '../../src/mock-data';
 
 export default class RestaurantForm extends Component {
-
-  componentDidMount() {
-    const restaurantsss = dishes;
-    console.log(restaurantsss);
-  }
-
 
   continue = e => {
     e.preventDefault();
     this.props.nextStep();
   }
 
+  goBack = e => {
+    e.preventDefault();
+    this.props.prevStep();
+  }
+
   onChange = (value) => {
-    console.log('onChange', value)
-    this.props.handleMealChange(value)
+    this.props.handleRestaurantSelection(value)
   }
 
   render() {
 
-    const { selectedMeal, mealOptions, people } = this.props;
+    const availableRestaurants = dishes.filter(dish => dish.availableMeals.includes(this.props.selectedMeal));
+    const restaurantList = availableRestaurants.map((item) => (item.restaurant));
+    const finalRestaurantList = [...new Set(restaurantList)].map((item) => ({value: item, label: item}));
 
     return (
       <>
-        <h1>Please Select a Meal</h1>
+        <h1>Please Select a Restaurant</h1>
         <Cascader
-          options={this.restaurantsss}
+          options={finalRestaurantList}
           onChange={this.onChange}
-          placeholder='Please select meal'
-        />
-        <br/>
-        <h1>Please Select Number of Diners</h1>
-        <br/>
-        <InputNumber
-          min={1} max={10}
-          defaultValue={1}
-          // onChange={handleChange('selectedMeal')}
+          placeholder='Please select restaurant'
         />
         <br/>
         <Button
           type='primary'
           onClick={this.continue}
         >
-          Primary
+          Next
+        </Button>
+        <Button
+          type='primary'
+          onClick={this.goBack}
+        >
+          Previous
         </Button>
       </>
     )

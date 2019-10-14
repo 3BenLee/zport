@@ -5,44 +5,54 @@ import DishForm from './DishForm';
 import ConfirmationForm from './ConfirmationForm';
 
 export default class BaseForm extends Component {
+
   state = {
     step: 1,
     selectedMeal: '',
     people: 1,
-    restaurant: '',
     selectedRestaurant: '',
     dish: '',
-    selectedDishes: '',
+    selectedDishes: [],
   }
 
   // Proceed to next step
   nextStep = () => {
     const { step } = this.state;
-    this.setState({step: step + 1})
+    this.setState({step: step + 1});
   }
 
   // Go back to previous step
   prevStep = () => {
     const { step } = this.state;
-    this.setState({step: step - 1})
+    this.setState({step: step - 1});
   }
 
-  // Handle field's change
-  // handleChange = (input) => (e) => {
-  //   this.setState({[input]: this.state.selectedMeal});
-  //   console.log('State', this.state);
-  // }
   handleMealSelection = (val) => {
-    console.log('value', val[0])
     this.setState({ selectedMeal: val[0] });
-    console.log('updated state', this.state)
   }
+
+  handlePeopleCount = (val) => {
+    // this.setState({people: val})
+    console.log('people', val);
+  }
+
+  handleRestaurantSelection = (val) => {
+    this.setState({ selectedRestaurant: val[0] });
+  }
+
+  handleDishSelection = (val) => {
+    this.setState(prevState => ({
+      selectedDishes: [...prevState.selectedDishes, val]
+    }));
+  }
+  // this.setState(prevState => ({
+  //   tasks: [...prevState.tasks, newTask]
+  // }));
 
   render() {
 
-    const { step } = this.state;
-    const { selectedMeal, people, restaurant, selectedRestaurant, dish, selectedDishes } = this.state;
-    const values = { selectedMeal, people, restaurant, dish };
+    console.log('updated state', this.state)
+    const { step, selectedMeal, people, selectedRestaurant, selectedDishes } = this.state;
 
     switch(step) {
       case 1:
@@ -65,7 +75,7 @@ export default class BaseForm extends Component {
           <RestaurantForm
             nextStep={this.nextStep}
             prevStep={this.prevStep}
-            handleRestaurantSelection={this.handleMealSelection}
+            handleRestaurantSelection={this.handleRestaurantSelection}
             selectedMeal={selectedMeal}
           />
         )
@@ -76,6 +86,7 @@ export default class BaseForm extends Component {
             prevStep={this.prevStep}
             handleDishSelection={this.handleDishSelection}
             selectedMeal={selectedMeal}
+            selectedRestaurant={selectedRestaurant}
           />
         )
       case 4:

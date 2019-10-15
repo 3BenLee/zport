@@ -3,6 +3,7 @@ import MealForm from './MealForm';
 import RestaurantForm from './RestaurantForm';
 import DishForm from './DishForm';
 import ConfirmationForm from './ConfirmationForm';
+import { previewImage } from 'antd/lib/upload/utils';
 
 export default class BaseForm extends Component {
 
@@ -12,6 +13,7 @@ export default class BaseForm extends Component {
     people: 1,
     selectedRestaurant: '',
     dish: '',
+    dishSelectorInputs: [],
     selectedDishes: [],
   }
 
@@ -45,6 +47,12 @@ export default class BaseForm extends Component {
       selectedDishes: [...prevState.selectedDishes, val]
     }));
   }
+
+  handleAddInput = (element) => {
+    this.setState(prevState => ({
+      dishSelectorInputs: [...prevState.dishSelectorInputs, element]
+    }))
+  }
   // this.setState(prevState => ({
   //   tasks: [...prevState.tasks, newTask]
   // }));
@@ -52,7 +60,7 @@ export default class BaseForm extends Component {
   render() {
 
     console.log('updated state', this.state)
-    const { step, selectedMeal, people, selectedRestaurant, selectedDishes } = this.state;
+    const { step, selectedMeal, people, selectedRestaurant, selectedDishes, dishSelectorInputs } = this.state;
 
     switch(step) {
       case 1:
@@ -85,7 +93,9 @@ export default class BaseForm extends Component {
             nextStep={this.nextStep}
             prevStep={this.prevStep}
             handleDishSelection={this.handleDishSelection}
+            handleAddInput={this.handleAddInput}
             selectedMeal={selectedMeal}
+            dishSelectorInputs={dishSelectorInputs}
             selectedRestaurant={selectedRestaurant}
           />
         )

@@ -1,50 +1,40 @@
 import React, { Component } from 'react';
-import { Cascader, InputNumber, Button } from 'antd';
+import { Cascader, InputNumber } from 'antd';
+import './MealForm.css';
 
 export default class MealForm extends Component {
-
-
-  continue = e => {
-    e.preventDefault();
-    this.props.nextStep();
-  }
 
   onChange = (value) => {
     this.props.handleMealSelection(value)
   }
 
-  // onNumberChange = (value) => {
-  //   console.log('number', value)
-  //   this.props.handlePeopleCount(value)
-  // }
+  onNumberChange = (value) => {
+    this.props.handlePeopleCount(value)
+  }
 
   render() {
 
-    const { mealOptions } = this.props;
+    const { mealOptions, selectedMeal, people } = this.props;
 
     return (
       <>
-        <h1>Please Select a Meal</h1>
+        <div className='mealWrapper'>
+        <h3 className='meal'>Please Select a Meal</h3>
         <Cascader
           options={mealOptions}
+          allowClear={false}
           onChange={this.onChange}
-          placeholder='Please select meal'
+          placeholder={selectedMeal}
         />
+        </div>
         <br/>
-        <h1>Please Select Number of Diners</h1>
+        <h3>Please Select Number of Diners</h3>
         <br/>
         <InputNumber
           min={1} max={10}
-          defaultValue={1}
-          // onChange={this.onNumberChange}
+          defaultValue={people}
+          onChange={this.onNumberChange}
         />
-        <br/>
-        <Button
-          type='primary'
-          onClick={this.continue}
-        >
-          Next
-        </Button>
       </>
     )
   }

@@ -3,11 +3,12 @@ import MealForm from './MealForm';
 import RestaurantForm from './RestaurantForm';
 import DishForm from './DishForm';
 import ConfirmationForm from './ConfirmationForm';
-import { previewImage } from 'antd/lib/upload/utils';
+import { Button } from 'antd';
 
 export default class BaseForm extends Component {
 
   state = {
+    index: 0,
     step: 1,
     selectedMeal: '',
     people: 1,
@@ -34,7 +35,7 @@ export default class BaseForm extends Component {
   }
 
   handlePeopleCount = (val) => {
-    // this.setState({people: val})
+    this.setState({people: val})
     console.log('people', val);
   }
 
@@ -48,19 +49,51 @@ export default class BaseForm extends Component {
     }));
   }
 
-  handleAddInput = (element) => {
+  handleAddInput = (element, index) => {
+    this.setState(prevState => ({
+      index: prevState.index + 1
+    }));
     this.setState(prevState => ({
       dishSelectorInputs: [...prevState.dishSelectorInputs, element]
-    }))
+    }));
   }
-  // this.setState(prevState => ({
-  //   tasks: [...prevState.tasks, newTask]
-  // }));
+
+  handleRemoveInput = index => () => {
+    this.setState({
+      dishSelectorInputs: this.state.dishSelectorInputs.filter((item, itemIndex) => index !== itemIndex)
+    });
+  };
 
   render() {
 
+    const { step,
+      selectedMeal,
+      people,
+      selectedRestaurant,
+      selectedDishes,
+      dishSelectorInputs,
+      index
+    } = this.state;
+
+    const nextButton = (
+      <Button
+        type='primary'
+        onClick={step === 1 | 2 | 3 && this.nextStep}
+      >
+        Next
+      </Button>
+    );
+
+    const backButton = (
+      <Button
+        type='primary'
+        onClick={step ===  2 | 3 | 4 && this.prevStep}
+      >
+        Back
+      </Button>
+    );
+
     console.log('updated state', this.state)
-    const { step, selectedMeal, people, selectedRestaurant, selectedDishes, dishSelectorInputs } = this.state;
 
     switch(step) {
       case 1:
@@ -70,45 +103,63 @@ export default class BaseForm extends Component {
           {value: 'dinner', label: 'dinner'}
         ];
         return (
-          <MealForm
-            nextStep={this.nextStep}
-            handleMealSelection={this.handleMealSelection}
-            selectedMeal={selectedMeal}
-            mealOptions={mealOptions}
-            people={people}
-          />
+          <>
+            <MealForm
+              nextStep={this.nextStep}
+              handleMealSelection={this.handleMealSelection}
+              handlePeopleCount={this.handlePeopleCount}
+              selectedMeal={selectedMeal}
+              mealOptions={mealOptions}
+              people={people}
+            />
+            {nextButton}
+          </>
         )
       case 2:
         return (
-          <RestaurantForm
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            handleRestaurantSelection={this.handleRestaurantSelection}
-            selectedMeal={selectedMeal}
-          />
+          <>
+            <RestaurantForm
+              nextStep={this.nextStep}
+              prevStep={this.prevStep}
+              handleRestaurantSelection={this.handleRestaurantSelection}
+              selectedMeal={selectedMeal}
+            />
+            {backButton}
+            {nextButton}
+          </>
         )
       case 3:
         return (
-          <DishForm
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            handleDishSelection={this.handleDishSelection}
-            handleAddInput={this.handleAddInput}
-            selectedMeal={selectedMeal}
-            dishSelectorInputs={dishSelectorInputs}
-            selectedRestaurant={selectedRestaurant}
-          />
+          <>
+            <DishForm
+              nextStep={this.nextStep}
+              prevStep={this.prevStep}
+              handleDishSelection={this.handleDishSelection}
+              handleAddInput={this.handleAddInput}
+              handleRemoveInput={this.handleRemoveInput}
+              selectedMeal={selectedMeal}
+              dishSelectorInputs={dishSelectorInputs}
+              selectedRestaurant={selectedRestaurant}
+              index={index}
+            />
+            {backButton}
+            {nextButton}
+          </>
         )
       case 4:
         return (
-          <ConfirmationForm
-            submit={this.handleSubmit}
-            prevStep={this.prevStep}
-            selectedMeal={selectedMeal}
-            people={people}
-            selectedRestaurant={selectedRestaurant}
-            selectedDishes={selectedDishes}
-          />
+          <>
+            <ConfirmationForm
+              submit={this.handleSubmit}
+              prevStep={this.prevStep}
+              selectedMeal={selectedMeal}
+              people={people}
+              selectedRestaurant={selectedRestaurant}
+              selectedDishes={selectedDishes}
+            />
+            {backButton}
+            {nextButton}
+          </>
         )
       default:
         return ''

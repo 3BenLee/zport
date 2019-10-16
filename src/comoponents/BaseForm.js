@@ -4,9 +4,9 @@ import RestaurantForm from './RestaurantForm';
 import DishForm from './DishForm';
 import ConfirmationForm from './ConfirmationForm';
 import { Button } from 'antd';
+import StepZilla from "react-stepzilla";
 
 export default class BaseForm extends Component {
-
   state = {
     index: 0,
     step: 1,
@@ -15,39 +15,39 @@ export default class BaseForm extends Component {
     selectedRestaurant: '',
     dish: '',
     dishSelectorInputs: [],
-    selectedDishes: [],
-  }
+    selectedDishes: []
+  };
 
   // Proceed to next step
   nextStep = () => {
     const { step } = this.state;
-    this.setState({step: step + 1});
-  }
+    this.setState({ step: step + 1 });
+  };
 
   // Go back to previous step
   prevStep = () => {
     const { step } = this.state;
-    this.setState({step: step - 1});
-  }
+    this.setState({ step: step - 1 });
+  };
 
-  handleMealSelection = (val) => {
+  handleMealSelection = val => {
     this.setState({ selectedMeal: val[0] });
-  }
+  };
 
-  handlePeopleCount = (val) => {
-    this.setState({people: val})
+  handlePeopleCount = val => {
+    this.setState({ people: val });
     console.log('people', val);
-  }
+  };
 
-  handleRestaurantSelection = (val) => {
+  handleRestaurantSelection = val => {
     this.setState({ selectedRestaurant: val[0] });
-  }
+  };
 
-  handleDishSelection = (val) => {
+  handleDishSelection = val => {
     this.setState(prevState => ({
       selectedDishes: [...prevState.selectedDishes, val]
     }));
-  }
+  };
 
   handleAddInput = (element, index) => {
     this.setState(prevState => ({
@@ -56,51 +56,36 @@ export default class BaseForm extends Component {
     this.setState(prevState => ({
       dishSelectorInputs: [...prevState.dishSelectorInputs, element]
     }));
-  }
-
-  handleRemoveInput = index => () => {
-    this.setState({
-      dishSelectorInputs: this.state.dishSelectorInputs.filter((item, itemIndex) => index !== itemIndex)
-    });
   };
 
-  render() {
+  handleRemoveInput = idx => {
+    const newDishSelectorInputs = this.state.dishSelectorInputs.filter(item => {
+      return item.key !== idx.toString();
+    });
+    this.setState({ dishSelectorInputs: [...newDishSelectorInputs] });
+  };
 
-    const { step,
-      selectedMeal,
-      people,
-      selectedRestaurant,
-      selectedDishes,
-      dishSelectorInputs,
-      index
-    } = this.state;
+  renderSteps() {
+    const { step, selectedMeal, people, selectedRestaurant, selectedDishes, dishSelectorInputs, index } = this.state;
 
     const nextButton = (
-      <Button
-        type='primary'
-        onClick={step === 1 | 2 | 3 && this.nextStep}
-      >
+      <Button type='primary' onClick={(step === 1) | 2 | 3 && this.nextStep}>
         Next
       </Button>
     );
 
     const backButton = (
-      <Button
-        type='primary'
-        onClick={step ===  2 | 3 | 4 && this.prevStep}
-      >
+      <Button type='primary' onClick={(step === 2) | 3 | 4 && this.prevStep}>
         Back
       </Button>
     );
 
-    console.log('updated state', this.state)
-
-    switch(step) {
+    switch (step) {
       case 1:
         const mealOptions = [
-          {value: 'breakfast', label: 'breakfast'},
-          {value: 'lunch', label: 'lunch'},
-          {value: 'dinner', label: 'dinner'}
+          { value: 'breakfast', label: 'breakfast' },
+          { value: 'lunch', label: 'lunch' },
+          { value: 'dinner', label: 'dinner' }
         ];
         return (
           <>
@@ -114,7 +99,7 @@ export default class BaseForm extends Component {
             />
             {nextButton}
           </>
-        )
+        );
       case 2:
         return (
           <>
@@ -127,7 +112,7 @@ export default class BaseForm extends Component {
             {backButton}
             {nextButton}
           </>
-        )
+        );
       case 3:
         return (
           <>
@@ -141,11 +126,12 @@ export default class BaseForm extends Component {
               dishSelectorInputs={dishSelectorInputs}
               selectedRestaurant={selectedRestaurant}
               index={index}
+              selectedDishes={selectedDishes}
             />
             {backButton}
             {nextButton}
           </>
-        )
+        );
       case 4:
         return (
           <>
@@ -160,9 +146,30 @@ export default class BaseForm extends Component {
             {backButton}
             {nextButton}
           </>
-        )
+        );
       default:
-        return ''
+        return '';
     }
+  }
+
+  render() {
+    console.log('updated state', this.state);
+
+    const steps =
+    [
+      {name: 'Step 1', component: <MealForm />},
+      {name: 'Step 2', component: <RestaurantForm />},
+      {name: 'Step 3', component: <DishForm />},
+      {name: 'Step 4', component: <ConfirmationForm />}
+    ];
+
+    return (
+      <>
+        <div className='step-progress'>
+          <StepZilla steps={steps}/>
+        </div>
+        {this.renderSteps()}
+      </>
+    );
   }
 }

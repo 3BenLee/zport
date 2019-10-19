@@ -1,0 +1,16 @@
+.nav-button {
+  margin: 30px 30px;
+}
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  width: 40%;
+  margin: auto;
+  padding: 40px 0;
+}
+
+.error {
+  color: red;
+}
+

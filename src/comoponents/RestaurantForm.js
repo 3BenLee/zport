@@ -16,6 +16,7 @@ export default class RestaurantForm extends Component {
       <>
         <h3>Please Select a Restaurant</h3>
         <Cascader options={finalRestaurantList} onChange={this.onChange} placeholder='Please select restaurant' />
+        <br/>
       </>
     );
   }

@@ -8,14 +8,15 @@ import './BaseForm.css';
 
 export default class BaseForm extends Component {
   state = {
-    index: 0,
     step: 1,
     selectedMeal: '',
     people: 1,
     selectedRestaurant: '',
-    dishQuantity: 2,
-    dishSelectorInputs: [],
-    selectedDishes: [],
+    selectedDishes: [
+      // { dish: '',
+      //   quantity: '',
+      // }
+    ],
     errorOne: false,
     errorTwo: false,
   };
@@ -45,45 +46,23 @@ export default class BaseForm extends Component {
     this.setState({ selectedRestaurant: val[0] });
   };
 
-  handleDishSelection = val => {
-    this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, val]
+  handleAddInput = e => {
+    console.log('fired')
+    this.setState((prevState) => ({
+      selectedDishes: [...prevState.selectedDishes, {dish: '', quantity: ''}]
     }));
-  };
-
-  handleDishQuantity = val => {
-    this.setState({ people: val });
-    console.log('quantity', val);
   }
 
-  handleAddInput = element => {
-    this.setState(prevState => ({
-      index: prevState.index + 1
+  handleAddDish = (val) => {
+    this.setState((prevState) => ({
+      selectedDishes: [{ dish: val[0] }, ...prevState.selectedDishes ]
     }));
-    this.setState(prevState => ({
-      dishSelectorInputs: [...prevState.dishSelectorInputs, element]
-    }));
-  };
-
-  handleRemoveInput = idx => {
-    const newDishSelectorInputs = this.state.dishSelectorInputs.filter(item => {
-      return item.key !== idx.toString();
-    });
-    this.setState({ dishSelectorInputs: [...newDishSelectorInputs] });
-    const newSelectedDishes = this.state.selectedDishes.slice(0, idx).concat(this.state.selectedDishes.slice(idx + 1));
-    this.setState({ selectedDishes: newSelectedDishes});
-  };
-
-  createFlattenedArray() {
-    const flattendArr = this.state.selectedDishes.map((item) => (item[0]))
-    return flattendArr;
   }
 
   validateInputs() {
     const { step, selectedMeal, people, selectedRestaurant, selectedDishes } = this.state;
 
     const inputComplete = () => {
-      console.log('step complete')
       this.setState({ errorOne: false });
       this.setState({ errorTwo: false });
       this.nextStep();
@@ -103,6 +82,7 @@ export default class BaseForm extends Component {
         } else {
           console.log('step 3 complete!')
           return inputComplete();
+
         }
       default:
         return ''
@@ -166,7 +146,7 @@ export default class BaseForm extends Component {
             <DishForm
               nextStep={this.nextStep}
               prevStep={this.prevStep}
-              handleDishSelection={this.handleDishSelection}
+              handleAddDish={this.handleAddDish}
               handleAddInput={this.handleAddInput}
               handleRemoveInput={this.handleRemoveInput}
               selectedMeal={selectedMeal}

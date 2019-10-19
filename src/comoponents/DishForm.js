@@ -5,67 +5,56 @@ import './DishForm.css';
 
 export default class DishForm extends Component {
 
-  onChange = value => {
-    this.props.handleDishSelection(value);
+  onChange = (value, index) => {
+    this.props.handleAddDish(value);
+    console.log('dish index', index);
   };
 
-  onNumberChange = value => {
-    this.props.handleDishQuantity(value);
-  }
+  // onNumberChange = value => {
+  //   // this.props.handleDishQuantity(value);
+  // }
 
   render() {
-    const {
-      selectedRestaurant,
-      handleAddInput,
-      handleRemoveInput,
-      dishSelectorInputs,
-      selectedDishes,
-      index
-    } = this.props;
+
+    const { quantity, selectedRestaurant, selectedDishes } = this.props;
 
     const dishesList = dishes.filter(dish => dish.restaurant.includes(selectedRestaurant));
     const finalDishesList = dishesList.map(item => item.name);
-    const formattedDishList = finalDishesList.map(item => ({ value: item, label: item }));
-
-    const cascadeElement = (
-      <div key={index}>
-        <Cascader
-        className='dish-cascader'
-        options={formattedDishList}
-        onChange={this.onChange}
-        placeholder={selectedDishes[index]}
-        />
-        <InputNumber
-          className='dish-number'
-          min={1}
-          max={10}
-          defaultValue={1}
-          onChange={this.onNumberChange}
-        />
-        <Button shape='circle' icon='minus' onClick={() => handleRemoveInput(index)} />
-        <br />
-      </div>
-    );
+    const formattedDishList = finalDishesList.map((item, index) => ({ value: item, label: item, index: index }));
 
     return (
-      <div className='dish-form'>
-        <h3>Select a Dish and quantity</h3>
-        <Cascader
-          options={formattedDishList}
-          onChange={this.onChange}
-          placeholder='Please select a dish'
-        />
-        <InputNumber
-          className='dish-number'
-          min={1}
-          max={10}
-          defaultValue={1}
-          onChange={this.onNumberChange}
-        />
-        <br />
-        {dishSelectorInputs.map(cascadeElement => cascadeElement)}
-        <Button className='add-button' shape='circle' icon='plus' onClick={() => handleAddInput(cascadeElement)}/>
-      </div>
+      <>
+        {selectedDishes.map((val, idx) => {
+          let dishId = `dish-${idx}`, quantityId = `quantity-${quantity}`
+          return (
+            <div key={idx}>
+              <Cascader
+                className='dish'
+                options={formattedDishList}
+                onChange={this.onChange}
+                placeholder='dish'
+                id={dishId}
+                data-id={idx}
+                name={dishId}
+              />
+              <InputNumber
+                min={1}
+                max={10}
+                defaultValue={1}
+                onChange={this.onNumberChange}
+                name={quantityId}
+                value={selectedDishes[idx].quantity}
+                data-id={idx}
+                id={quantityId}
+                className='dish-number'
+              />
+              {/* <Button shape='circle' icon='minus' onClick={() => handleRemoveInput(index)} /> */}
+              <br />
+            </div>
+          )}
+        )}
+       <Button className='add-button' shape='circle' icon='plus' onClick={() => this.props.handleAddInput()}/>
+       </>
     );
   }
 }

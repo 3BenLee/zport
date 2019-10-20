@@ -5,10 +5,10 @@ import './DishForm.css';
 
 export default class DishForm extends Component {
 
-  onChange = (value, index) => {
-    this.props.handleAddDish(value);
-    console.log('dish index', index);
-  };
+  // onChange = (index) => {
+  //   this.props.handleAddDish(index);
+  //   console.log('dish index', index);
+  // };
 
   // onNumberChange = value => {
   //   // this.props.handleDishQuantity(value);
@@ -31,10 +31,9 @@ export default class DishForm extends Component {
               <Cascader
                 className='dish'
                 options={formattedDishList}
-                onChange={this.onChange}
+                onChange={this.props.handleAddDish}
                 placeholder='dish'
-                id={dishId}
-                data-id={idx}
+                id={idx}
                 name={dishId}
               />
               <InputNumber
@@ -43,9 +42,9 @@ export default class DishForm extends Component {
                 defaultValue={1}
                 onChange={this.onNumberChange}
                 name={quantityId}
-                value={selectedDishes[idx].quantity}
+                // value={selectedDishes[idx].quantity}
                 data-id={idx}
-                id={quantityId}
+                id={idx}
                 className='dish-number'
               />
               {/* <Button shape='circle' icon='minus' onClick={() => handleRemoveInput(index)} /> */}

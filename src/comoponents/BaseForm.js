@@ -46,16 +46,17 @@ export default class BaseForm extends Component {
     this.setState({ selectedRestaurant: val[0] });
   };
 
-  handleAddInput = e => {
+  handleAddInput = () => {
     console.log('fired')
     this.setState((prevState) => ({
       selectedDishes: [...prevState.selectedDishes, {dish: '', quantity: ''}]
     }));
   }
 
-  handleAddDish = (val) => {
+  handleAddDish = (idx) => {
+    // console.log('idx', idx);
     this.setState((prevState) => ({
-      selectedDishes: [{ dish: val[0] }, ...prevState.selectedDishes ]
+      selectedDishes: [...prevState.selectedDishes, {dish: idx[0], quantity: ''}]
     }));
   }
 

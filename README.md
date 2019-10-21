@@ -1,3 +1,18 @@
+# Zenport Test README
+
+This app was built using create react app.
+
+to run the app in development mode:
+
+    `yarn start`
+
+## About the Test
+
+ I made a`mock-data` file in the root. I had a little trouble with step 3 so some of the code is commented to allow the app to continue to step 4. I apologize for not being able to complete step 3. I had some trouble trying to update the state with data from the dynamic selectors. Thank you for the opportunity to take this test. It was fun and challenging.  I plan to continue to try to get step 3 working in the near future.
+
+--------------------------------------------------------------------------------------------------------
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

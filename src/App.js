@@ -4,8 +4,8 @@ import BaseForm from './comoponents/BaseForm';
 
 function App() {
   return (
-    <div className="App">
-     <BaseForm />
+    <div className='App'>
+      <BaseForm />
     </div>
   );
 }

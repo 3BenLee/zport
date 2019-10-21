@@ -2,8 +2,12 @@
   margin-top: 30px;
 }
 
-.dish {
+.dishes {
   margin: 0 0 30px 35px;
+}
+
+.dish {
+  margin-right: 40px;
 }
 
 .dish-number {

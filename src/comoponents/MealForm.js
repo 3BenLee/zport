@@ -1,36 +1,43 @@
 import React, { Component } from 'react';
-import { Cascader, InputNumber } from 'antd';
 import './MealForm.css';
 
 export default class MealForm extends Component {
-  onChange = value => {
-    this.props.handleMealSelection(value);
-    this.props.handlePeopleCount(value);
+  onChange = e => {
+    this.props.handleMealSelection(e.target.value);
   };
 
-  onNumberChange = value => {
-    this.props.handlePeopleCount(value);
+  onNumberChange = e => {
+    this.props.handlePeopleCount(e.target.value);
   };
 
   render() {
-    const { mealOptions, selectedMeal } = this.props;
+    const { mealOptions, numbers } = this.props;
+
+    const mealSelections = mealOptions.map((meal, i) => (
+      <option key={i} value={meal}>
+        {meal}
+      </option>
+    ));
+
+    const peopleSelector = numbers.map((e, i) => (
+      <option key={i} value={e}>
+        {e}
+      </option>
+    ));
 
     return (
       <>
-        <div >
-          <h3 className='meal'>Please Select a Meal</h3>
-          <Cascader options={mealOptions} allowClear={false} onChange={this.onChange} placeholder={selectedMeal} />
-        </div>
+        <h3 className='meal'>Please Select a Meal</h3>
+        <select className= 'meal-selector' required onChange={this.onChange}>
+        <option disabled='disabled' selected>**Select an Restaurant**</option>
+          {mealSelections}
+        </select>
         <br />
         <h3>Please Select Number of Diners</h3>
         <br />
-        <InputNumber
-          className='numberInput'
-          min={1}
-          max={10}
-          defaultValue={1}
-          onChange={this.onNumberChange}
-        />
+        <select required onChange={this.onNumberChange}>
+          {peopleSelector}
+        </select>
         <br />
       </>
     );

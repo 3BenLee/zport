@@ -8,58 +8,67 @@ import './BaseForm.css';
 
 export default class BaseForm extends Component {
   state = {
+    numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     step: 1,
     selectedMeal: '',
-    people: 1,
+    people: 0,
     selectedRestaurant: '',
-    selectedDishes: [
-      // { dish: '',
-      //   quantity: '',
-      // }
-    ],
+    selectedDishes: [{ dish: '', quantity: 0 }],
     errorOne: false,
-    errorTwo: false,
+    errorTwo: false
   };
 
-  // Proceed to next step
+  /** Proceed to next step */
   nextStep = () => {
     const { step } = this.state;
     this.setState({ step: step + 1 });
   };
 
-  // Go back to previous step
+  /** Go back to previous step */
   prevStep = () => {
     const { step } = this.state;
     this.setState({ step: step - 1 });
   };
 
-  handleMealSelection = val => {
-    this.setState({ selectedMeal: val[0] });
+  handleMealSelection = value => {
+    this.setState({ selectedMeal: value });
   };
 
-  handlePeopleCount = val => {
-    this.setState({ people: val });
-    console.log('people', val);
+  handlePeopleCount = value => {
+    this.setState({ people: value });
   };
 
-  handleRestaurantSelection = val => {
-    this.setState({ selectedRestaurant: val[0] });
+  handleRestaurantSelection = value => {
+    this.setState({ selectedRestaurant: value });
   };
 
   handleAddInput = () => {
-    console.log('fired')
-    this.setState((prevState) => ({
-      selectedDishes: [...prevState.selectedDishes, {dish: '', quantity: ''}]
+    this.setState(prevState => ({
+      selectedDishes: [...prevState.selectedDishes, { dish: '', quantity: 0 }]
     }));
-  }
+  };
 
-  handleAddDish = (idx) => {
-    // console.log('idx', idx);
-    this.setState((prevState) => ({
-      selectedDishes: [...prevState.selectedDishes, {dish: idx[0], quantity: ''}]
+  /**
+   * This part (Step 3) gave me some trouble.
+   */
+  handleAddDish = val => {
+    this.setState(prevState => ({
+      selectedDishes: [...prevState.selectedDishes, { dish: val, quantity: 0 }]
     }));
-  }
+  };
 
+  /**
+   * Couldn't quite get this part to work so I commented it to allow
+   * the app to continue to step 4.
+   */
+  // handleQuantity = (val) => {
+  //   console.log('val', val)
+  //   this.setState(prevState => ({
+  //     selectedDishes: [...prevState.selectedDishes, { dish: '', quantity: val }]
+  //   }));
+  // }
+
+  /** Input Validation */
   validateInputs() {
     const { step, selectedMeal, people, selectedRestaurant, selectedDishes } = this.state;
 
@@ -69,30 +78,30 @@ export default class BaseForm extends Component {
       this.nextStep();
     };
 
-    switch(step) {
+    const dishesArray = selectedDishes.map(dish => dish.dish);
+
+    switch (step) {
       case 1:
-        return !selectedMeal || !people ? this.setState({ errorOne: true }) : inputComplete();
+        return selectedMeal && people ? inputComplete() : this.setState({ errorOne: true });
       case 2:
         return !selectedRestaurant ? this.setState({ errorOne: true }) : inputComplete();
       case 3:
         if (!selectedDishes.length) {
-          return this.setState({ errorOne: true })
-        }
-        else if (new Set(this.createFlattenedArray()).size !== this.createFlattenedArray().length) {
+          return this.setState({ errorOne: true });
+        } else if (new Set(dishesArray).size !== dishesArray.length) {
           return this.setState({ errorTwo: true });
         } else {
-          console.log('step 3 complete!')
           return inputComplete();
-
         }
       default:
-        return ''
+        return '';
     }
-  };
+  }
 
   renderSteps() {
     const {
       step,
+      numbers,
       selectedMeal,
       people,
       selectedRestaurant,
@@ -103,61 +112,55 @@ export default class BaseForm extends Component {
     } = this.state;
 
     const backButton = (
-      <Button className='nav-button' type='primary' onClick={step === 2 | 3 | 4 && this.prevStep}>
+      <Button className='nav-button' type='primary' onClick={(step === 2) | 3 | 4 && this.prevStep}>
         Back
       </Button>
     );
 
     switch (step) {
       case 1:
-        const mealOptions = [
-          { value: 'breakfast', label: 'breakfast' },
-          { value: 'lunch', label: 'lunch' },
-          { value: 'dinner', label: 'dinner' }
-        ];
+        const mealOptions = ['breakfast', 'lunch', 'dinner'];
         return (
           <>
             <MealForm
-              nextStep={this.nextStep}
               handleMealSelection={this.handleMealSelection}
               handlePeopleCount={this.handlePeopleCount}
-              selectedMeal={selectedMeal}
               mealOptions={mealOptions}
-              people={people}
+              numbers={numbers}
             />
-            <Button className='nav-button' type='primary' onClick={() => this.validateInputs(1)}>Next</Button>
+            <Button className='nav-button' type='primary' onClick={() => this.validateInputs(1)}>
+              Next
+            </Button>
           </>
         );
       case 2:
         return (
           <>
-            <RestaurantForm
-              nextStep={this.nextStep}
-              prevStep={this.prevStep}
-              handleRestaurantSelection={this.handleRestaurantSelection}
-              selectedMeal={selectedMeal}
-            />
+            <RestaurantForm handleRestaurantSelection={this.handleRestaurantSelection} selectedMeal={selectedMeal} />
             {backButton}
-            <Button className='nav-button' type='primary' onClick={() => this.validateInputs(2)}>Next</Button>
+            <Button className='nav-button' type='primary' onClick={() => this.validateInputs(2)}>
+              Next
+            </Button>
           </>
         );
       case 3:
         return (
           <>
             <DishForm
-              nextStep={this.nextStep}
-              prevStep={this.prevStep}
               handleAddDish={this.handleAddDish}
               handleAddInput={this.handleAddInput}
               handleRemoveInput={this.handleRemoveInput}
               selectedMeal={selectedMeal}
               dishSelectorInputs={dishSelectorInputs}
               selectedRestaurant={selectedRestaurant}
+              numbers={numbers}
               index={index}
               selectedDishes={selectedDishes}
             />
             {backButton}
-            <Button className='nav-button' type='primary' onClick={() => this.validateInputs(3)}>Next</Button>
+            <Button className='nav-button' type='primary' onClick={() => this.validateInputs(3)}>
+              Next
+            </Button>
           </>
         );
       case 4:
@@ -165,7 +168,6 @@ export default class BaseForm extends Component {
           <>
             <ConfirmationForm
               submit={this.handleSubmit}
-              prevStep={this.prevStep}
               selectedMeal={selectedMeal}
               people={people}
               dishQuantity={dishQuantity}
@@ -173,7 +175,13 @@ export default class BaseForm extends Component {
               selectedDishes={selectedDishes}
             />
             {backButton}
-            <Button className='nav-button' type='primary' onClick={() => (console.log('Complete!', this.state))}>Submit</Button>
+            <Button
+              className='nav-button'
+              type='primary'
+              onClick={() => console.log('Complete!', selectedMeal, people, selectedRestaurant, selectedDishes)}
+            >
+              Submit
+            </Button>
           </>
         );
       default:
@@ -182,16 +190,13 @@ export default class BaseForm extends Component {
   }
 
   render() {
-    console.log('updated state', this.state);
-    const { step, errorOne ,errorTwo } = this.state;
-    const errorMessageOne = errorOne && (
-      <h3 className='error'>Please make sure to complete all inputs</h3>
-    );
+    const { step, errorOne, errorTwo } = this.state;
+    const errorMessageOne = errorOne && <h3 className='error'>Please make sure to complete all inputs</h3>;
 
     const errorMessageTwo = errorTwo && (
       <>
         <h3 className='error'>Please do not enter the same meal more than once</h3>
-        <br/>
+        <br />
         <h3 className='error'>Just enter dish selection once and increase the quantity</h3>
       </>
     );
@@ -203,7 +208,7 @@ export default class BaseForm extends Component {
         <Button type={step === 3 ? 'primary' : 'default'}>Step 3</Button>
         <Button type={step === 4 ? 'primary' : 'default'}>Step 4</Button>
       </div>
-    )
+    );
 
     return (
       <>

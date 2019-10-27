@@ -4,9 +4,10 @@ import { dishes } from '../../src/mock-data';
 import './DishForm.css';
 
 export default class DishForm extends Component {
-  onChange = e => {
-    this.props.handleAddDish(e.target.value);
-  };
+  // onChange = e => {
+  //   e.preventDefault()
+  //   this.props.handleAddDish(e.target.value);
+  // };
 
   onNumberChange = e => {
     /**
@@ -16,7 +17,7 @@ export default class DishForm extends Component {
   };
 
   render() {
-    const { selectedRestaurant, selectedDishes, numbers } = this.props;
+    const { selectedRestaurant, selectedDishes, numbers, handleAddDish, handleAddInput } = this.props;
 
     const dishesList = dishes.filter(dish => dish.restaurant.includes(selectedRestaurant));
     const filteredDishesList = dishesList.map(item => item.name);
@@ -35,18 +36,19 @@ export default class DishForm extends Component {
 
     return (
       <>
-        {selectedDishes.map((item, i) => (
+        {selectedDishes.map((i, index) => (
+          // console.log('initial inputs', i, index)
           <div className='dishes' key={i}>
-            <select className='dish' required key={`${item}-${i}`} onChange={this.onChange}>
+            <select name={index} className='dish' required key={i} onChange={handleAddDish}>
               {RestaurantDishList}
             </select>
-            <select required key={i++} onChange={this.onNumberChange}>
+            <select name={`quantity-${i}`}required key={i++} onChange={this.onNumberChange}>
               {quantitySelector}
             </select>
           </div>
         ))}
         <br />
-        <Button className='add-button' shape='circle' icon='plus' onClick={() => this.props.handleAddInput()} />
+        <Button className='add-button' shape='circle' icon='plus' onClick={handleAddInput} />
       </>
     );
   }

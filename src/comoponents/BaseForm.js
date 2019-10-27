@@ -13,7 +13,7 @@ export default class BaseForm extends Component {
     selectedMeal: '',
     people: 0,
     selectedRestaurant: '',
-    selectedDishes: [{ dish: '', quantity: 0 }],
+    selectedDishes: [{ id: 0, dish: '', quantity: 0 }],
     errorOne: false,
     errorTwo: false
   };
@@ -30,32 +30,37 @@ export default class BaseForm extends Component {
     this.setState({ step: step - 1 });
   };
 
-  handleMealSelection = value => {
-    this.setState({ selectedMeal: value });
+  handleSelection = e => {
+    let name = e.target.name;
+    this.setState({ [name]: e.target.value });
   };
 
-  handlePeopleCount = value => {
-    this.setState({ people: value });
-  };
-
-  handleRestaurantSelection = value => {
-    this.setState({ selectedRestaurant: value });
-  };
-
-  handleAddInput = () => {
+  handleAddInput = (index) => {
     this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, { dish: '', quantity: 0 }]
+      selectedDishes: [...prevState.selectedDishes, { id: index++, dish: '', quantity: 0 }]
     }));
   };
 
   /**
    * This part (Step 3) gave me some trouble.
    */
-  handleAddDish = val => {
-    this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, { dish: val, quantity: 0 }]
-    }));
-  };
+  handleAddDish = (e) => {
+    let dishName = e.target.name;
+    console.log('seldish', this.state.selectedDishes);
+    console.log('dishName',dishName, e.target.value)
+    this.state.selectedDishes.forEach((dish) => {
+    if(dishName === dish.id)
+      // console.log('id to string', dish.id)
+      console.log('e.target.value', e.target.value)
+      // this.setState({selectedDishes: [{ dish: e.target.value, quantity: 5}]
+      this.setState(prevState => ({
+        selectedDishes: [...prevState.selectedDishes, ]
+      }))
+  })}
+
+
+  // selectedDishes: [...prevState.selectedDishes, { dish: e.target.value, quantity: 0 }
+
 
   /**
    * Couldn't quite get this part to work so I commented it to allow
@@ -112,7 +117,7 @@ export default class BaseForm extends Component {
     } = this.state;
 
     const backButton = (
-      <Button className='nav-button' type='primary' onClick={(step === 2) | 3 | 4 && this.prevStep}>
+      <Button className='nav-button' type='primary' onClick={step === 2 | 3 | 4 && this.prevStep}>
         Back
       </Button>
     );
@@ -123,7 +128,7 @@ export default class BaseForm extends Component {
         return (
           <>
             <MealForm
-              handleMealSelection={this.handleMealSelection}
+              handleSelection={this.handleSelection}
               handlePeopleCount={this.handlePeopleCount}
               mealOptions={mealOptions}
               numbers={numbers}
@@ -136,7 +141,10 @@ export default class BaseForm extends Component {
       case 2:
         return (
           <>
-            <RestaurantForm handleRestaurantSelection={this.handleRestaurantSelection} selectedMeal={selectedMeal} />
+            <RestaurantForm
+              handleSelection={this.handleSelection}
+              selectedMeal={selectedMeal}
+            />
             {backButton}
             <Button className='nav-button' type='primary' onClick={() => this.validateInputs(2)}>
               Next
@@ -149,9 +157,7 @@ export default class BaseForm extends Component {
             <DishForm
               handleAddDish={this.handleAddDish}
               handleAddInput={this.handleAddInput}
-              handleRemoveInput={this.handleRemoveInput}
               selectedMeal={selectedMeal}
-              dishSelectorInputs={dishSelectorInputs}
               selectedRestaurant={selectedRestaurant}
               numbers={numbers}
               index={index}
@@ -190,6 +196,7 @@ export default class BaseForm extends Component {
   }
 
   render() {
+    console.log('state', this.state)
     const { step, errorOne, errorTwo } = this.state;
     const errorMessageOne = errorOne && <h3 className='error'>Please make sure to complete all inputs</h3>;
 

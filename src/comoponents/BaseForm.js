@@ -7,16 +7,20 @@ import { Button } from 'antd';
 import './BaseForm.css';
 
 export default class BaseForm extends Component {
-  state = {
-    numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    step: 1,
-    selectedMeal: '',
-    people: 0,
-    selectedRestaurant: '',
-    selectedDishes: [{ id: 0, dish: '', quantity: 0 }],
-    errorOne: false,
-    errorTwo: false
-  };
+  constructor(props){
+    super(props)
+
+    this.state = {
+      numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      step: 1,
+      selectedMeal: '',
+      people: 0,
+      selectedRestaurant: '',
+      selectedDishes: [{ index: 0, id: null, quantity: 0 }],
+      errorOne: false,
+      errorTwo: false
+    };
+  }
 
   /** Proceed to next step */
   nextStep = () => {
@@ -33,45 +37,38 @@ export default class BaseForm extends Component {
   handleSelection = e => {
     let name = e.target.name;
     this.setState({ [name]: e.target.value });
+    this.setState({selectedDishes: [{ index: 0, id: null, quantity: 0 }]});
   };
 
-  handleAddInput = (index) => {
+  handleAddInput = () => {
     this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, { id: index++, dish: '', quantity: 0 }]
+      selectedDishes: [...prevState.selectedDishes, { index: this.state.selectedDishes.length, id: null, quantity: 0 }]
     }));
   };
 
-  /**
-   * This part (Step 3) gave me some trouble.
-   */
-  handleAddDish = (e) => {
-    let dishName = e.target.name;
-    console.log('seldish', this.state.selectedDishes);
-    console.log('dishName',dishName, e.target.value)
-    this.state.selectedDishes.forEach((dish) => {
-    if(dishName === dish.id)
-      // console.log('id to string', dish.id)
-      console.log('e.target.value', e.target.value)
-      // this.setState({selectedDishes: [{ dish: e.target.value, quantity: 5}]
-      this.setState(prevState => ({
-        selectedDishes: [...prevState.selectedDishes, ]
-      }))
-  })}
+  handleAddDish = (index, val) => {
+    const { selectedDishes } = this.state;
+    console.log('handleAddDish', index, val);
+    let updatedItem;
+    updatedItem = selectedDishes.map((item) => {
+      if (item.index === index) {
+        item.id = val;
+      }
+      return updatedItem;
+    })
+  }
 
-
-  // selectedDishes: [...prevState.selectedDishes, { dish: e.target.value, quantity: 0 }
-
-
-  /**
-   * Couldn't quite get this part to work so I commented it to allow
-   * the app to continue to step 4.
-   */
-  // handleQuantity = (val) => {
-  //   console.log('val', val)
-  //   this.setState(prevState => ({
-  //     selectedDishes: [...prevState.selectedDishes, { dish: '', quantity: val }]
-  //   }));
-  // }
+  handleUpdateQuantity = (index, val) => {
+    const { selectedDishes } = this.state;
+    console.log('handleUpdateQuantity', index, val);
+    let updatedItem;
+    updatedItem = selectedDishes.map((item) => {
+      if (item.index === index) {
+        item.quantity = val;
+      }
+      return updatedItem;
+    })
+  }
 
   /** Input Validation */
   validateInputs() {
@@ -112,7 +109,6 @@ export default class BaseForm extends Component {
       selectedRestaurant,
       selectedDishes,
       dishQuantity,
-      dishSelectorInputs,
       index
     } = this.state;
 
@@ -157,6 +153,7 @@ export default class BaseForm extends Component {
             <DishForm
               handleAddDish={this.handleAddDish}
               handleAddInput={this.handleAddInput}
+              handleUpdateQuantity={this.handleUpdateQuantity}
               selectedMeal={selectedMeal}
               selectedRestaurant={selectedRestaurant}
               numbers={numbers}

@@ -10,6 +10,11 @@
   margin-right: 40px;
 }
 
+.minus {
+  margin-left: 40px;
+  display: inline;
+}
+
 .dish-number {
   margin: 30px 30px;
 }

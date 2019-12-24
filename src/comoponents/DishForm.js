@@ -23,6 +23,7 @@ export default class DishForm extends Component {
       numbers,
       handleAddDish,
       handleUpdateQuantity,
+      handleRemoveField,
       handleAddInput
     } = this.props;
 
@@ -30,11 +31,17 @@ export default class DishForm extends Component {
     // Here we create an array with just the names of the dishes available
     // at the chosen restaurant
     // This step might be unnecessary???
-    const filteredDishesList = dishesList.map(item => item.name);
+    // const filteredDishesList = dishesList.map(item => item.name);
+    const filteredDishesList = dishesList.map(dish => {
+      return {
+        dish: dish.name,
+        id: dish.id
+      }
+    })
 
     const RestaurantDishList = filteredDishesList.map((dish, index) => (
       <option key={index} value={dish.id}>
-        {dish}
+        {dish.dish}
       </option>
     ));
 
@@ -54,6 +61,9 @@ export default class DishForm extends Component {
             <select name={`${index}-${i}`} required key={index} onChange={(e) => handleUpdateQuantity(index, e.target.value)}>
               {quantitySelector}
             </select>
+            <div className='minus'>
+              <Button shape='circle' icon='minus' onClick={() => handleRemoveField(index)} />
+            </div>
           </div>
         ))}
         <br />

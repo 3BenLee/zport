@@ -16,6 +16,7 @@ export default class BaseForm extends Component {
       selectedMeal: '',
       people: 0,
       selectedRestaurant: '',
+      indexCounter: 1,
       selectedDishes: [{ index: 0, id: null, quantity: 0 }],
       errorOne: false,
       errorTwo: false
@@ -42,7 +43,8 @@ export default class BaseForm extends Component {
 
   handleAddInput = () => {
     this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, { index: this.state.selectedDishes.length, id: null, quantity: 0 }]
+      selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0 }],
+      indexCounter: this.state.indexCounter + 1
     }));
   };
 
@@ -68,6 +70,14 @@ export default class BaseForm extends Component {
       }
       return updatedItem;
     })
+  }
+
+  handleRemoveField = (index) => {
+    const { selectedDishes } = this.state;
+    console.log('handleRemoveField', index)
+
+    const newState = selectedDishes.filter(item => item.index !== index)
+    this.setState({selectedDishes: [...newState]})
   }
 
   /** Input Validation */
@@ -153,6 +163,7 @@ export default class BaseForm extends Component {
             <DishForm
               handleAddDish={this.handleAddDish}
               handleAddInput={this.handleAddInput}
+              handleRemoveField={this.handleRemoveField}
               handleUpdateQuantity={this.handleUpdateQuantity}
               selectedMeal={selectedMeal}
               selectedRestaurant={selectedRestaurant}

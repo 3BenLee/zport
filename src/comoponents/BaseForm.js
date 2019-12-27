@@ -90,7 +90,7 @@ export default class BaseForm extends Component {
       this.nextStep();
     };
 
-    const dishesArray = selectedDishes.map(dish => dish.dish);
+    const dishesArray = selectedDishes.map(dish => dish.id);
 
     switch (step) {
       case 1:
@@ -99,10 +99,13 @@ export default class BaseForm extends Component {
         return !selectedRestaurant ? this.setState({ errorOne: true }) : inputComplete();
       case 3:
         if (!selectedDishes.length) {
+          console.log('if', new Set(dishesArray).size, dishesArray.length)
           return this.setState({ errorOne: true });
         } else if (new Set(dishesArray).size !== dishesArray.length) {
+          console.log('else if', new Set(dishesArray).size, dishesArray.length)
           return this.setState({ errorTwo: true });
         } else {
+          console.log('else', new Set(dishesArray).size, dishesArray.length)
           return inputComplete();
         }
       default:

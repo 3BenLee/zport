@@ -4,22 +4,11 @@ import { dishes } from '../../src/mock-data';
 import './DishForm.css';
 
 export default class DishForm extends Component {
-  // onChange = (e, index) => {
-  //   e.preventDefault()
-  //   console.log('onChange', e.target.value, index)
-  //   this.props.handleAddDish(e.target.value, index);
-  // };
-
-  // onNumberChange = e => {
-  //   /**
-  //    * Commented to allow the app to continue to Step 4.
-  //    */
-  //   // this.props.handleQuantity(e.target.value);
-  // };
 
   render() {
     const { selectedRestaurant,
       selectedDishes,
+      selectedMeal,
       numbers,
       handleAddDish,
       handleUpdateQuantity,
@@ -27,12 +16,13 @@ export default class DishForm extends Component {
       handleAddInput
     } = this.props;
 
+
     const dishesList = dishes.filter(dish => dish.restaurant.includes(selectedRestaurant));
-    // Here we create an array with just the names of the dishes available
-    // at the chosen restaurant
-    // This step might be unnecessary???
-    // const filteredDishesList = dishesList.map(item => item.name);
-    const filteredDishesList = dishesList.map(dish => {
+    const dishListByMeal = dishesList.filter(dish => dish.availableMeals.includes(selectedMeal));
+
+    console.log('list by meal',dishListByMeal, dishesList);
+
+    const filteredDishesList = dishListByMeal.map(dish => {
       return {
         dish: dish.name,
         id: dish.id
@@ -55,10 +45,11 @@ export default class DishForm extends Component {
       <>
         {selectedDishes.map((i, index) => (
           <div className='dishes' key={index}>
-            <select name={index} className='dish' required key={i} onChange={(e) => handleAddDish(index, e.target.value)}>
+            <select name={index} className='dish' required key={i} onChange={(e) => handleAddDish(index + 1, e.target.value)}>
+              <option disabled='disabled' selected>**Select an Dish**</option>
               {RestaurantDishList}
             </select>
-            <select name={`${index}-${i}`} required key={index} onChange={(e) => handleUpdateQuantity(index, e.target.value)}>
+            <select name={`${index}-${i}`} required key={index} onChange={(e) => handleUpdateQuantity(index + 1, e.target.value)}>
               {quantitySelector}
             </select>
             <div className='minus'>

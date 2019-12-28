@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
-import { dishes } from '../../src/mock-data';
+import { dishes } from '../mock-data';
 import './DishForm.css';
 
 export default class DishForm extends Component {
@@ -45,15 +45,15 @@ export default class DishForm extends Component {
       <>
         {selectedDishes.map((i, index) => (
           <div className='dishes' key={index}>
-            <select name={index} className='dish' required key={i} onChange={(e) => handleAddDish(index + 1, e.target.value)}>
+            <select name={index} className='dish' required key={i} onChange={(e) => handleAddDish(i.index , e.target.value)}>
               <option disabled='disabled' selected>**Select an Dish**</option>
               {RestaurantDishList}
             </select>
-            <select name={`${index}-${i}`} required key={index} onChange={(e) => handleUpdateQuantity(index + 1, e.target.value)}>
+            <select name={`${index}-${i}`} required key={index} onChange={(e) => handleUpdateQuantity(i.index , e.target.value)}>
               {quantitySelector}
             </select>
             <div className='minus'>
-              <Button shape='circle' icon='minus' onClick={() => handleRemoveField(index)} />
+              <Button shape='circle' icon='minus' onClick={() => handleRemoveField(i.index)} />
             </div>
           </div>
         ))}

@@ -42,10 +42,17 @@ export default class BaseForm extends Component {
   };
 
   handleAddInput = () => {
+    if (this.state.selectedDishes.length === 0) {
     this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0 }],
+      selectedDishes: [...prevState.selectedDishes, { index: 0, id: null, quantity: 0 }],
       indexCounter: this.state.indexCounter + 1
     }));
+    } else {
+      this.setState(prevState => ({
+        selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0 }],
+        indexCounter: this.state.indexCounter + 1
+      }));
+    }
   };
 
   handleAddDish = (index, val) => {

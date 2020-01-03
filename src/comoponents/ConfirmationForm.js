@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { dishes } from '../mock-data';
+import { getDishName } from '../helpers/get-dish-name.js'
 
 export default class ConfirmationForm extends Component {
   render() {
@@ -9,7 +10,7 @@ export default class ConfirmationForm extends Component {
       .map((dish, index) => {
         return (
           <div key={index}>
-            <h2>{`Dish: ${dish.id}`}</h2>
+            <h2>{`Dish: ${getDishName(dish, dishes)}`}</h2>
             <h2>{`Quantity: ${dish.quantity}`}</h2>
           </div>
         );

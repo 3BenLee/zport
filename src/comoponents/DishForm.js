@@ -20,8 +20,6 @@ export default class DishForm extends Component {
     const dishesList = dishes.filter(dish => dish.restaurant.includes(selectedRestaurant));
     const dishListByMeal = dishesList.filter(dish => dish.availableMeals.includes(selectedMeal));
 
-    console.log('list by meal',dishListByMeal, dishesList);
-
     const filteredDishesList = dishListByMeal.map(dish => {
       return {
         dish: dish.name,
@@ -46,7 +44,7 @@ export default class DishForm extends Component {
         {selectedDishes.map((i, index) => (
           <div className='dishes' key={index}>
             <select name={index} className='dish' required key={i} onChange={(e) => handleAddDish(i.index , e.target.value)}>
-              <option disabled='disabled' selected>**Select an Dish**</option>
+              <option disabled='disabled' selected>**Select a Dish**</option>
               {RestaurantDishList}
             </select>
             <select name={`${index}-${i}`} required key={index} onChange={(e) => handleUpdateQuantity(i.index , e.target.value)}>

@@ -17,7 +17,7 @@ export default class BaseForm extends Component {
       people: 0,
       selectedRestaurant: '',
       indexCounter: 1,
-      selectedDishes: [{ index: 0, id: null, quantity: 0 }],
+      selectedDishes: [{ index: 0, id: null, quantity: 0}],
       errorOne: false,
       errorTwo: false
     };
@@ -38,18 +38,18 @@ export default class BaseForm extends Component {
   handleSelection = e => {
     let name = e.target.name;
     this.setState({ [name]: e.target.value });
-    this.setState({selectedDishes: [{ index: 0, id: null, quantity: 0 }]});
+    this.setState({selectedDishes: [{ index: 0, id: null, quantity: 0}]});
   };
 
   handleAddInput = () => {
     if (this.state.selectedDishes.length === 0) {
     this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, { index: 0, id: null, quantity: 0 }],
+      selectedDishes: [...prevState.selectedDishes, { index: 0, id: null, quantity: 0}],
       indexCounter: this.state.indexCounter + 1
     }));
     } else {
       this.setState(prevState => ({
-        selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0 }],
+        selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0}],
         indexCounter: this.state.indexCounter + 1
       }));
     }
@@ -61,7 +61,8 @@ export default class BaseForm extends Component {
     let updatedItem;
     updatedItem = selectedDishes.map((item) => {
       if (item.index === index) {
-        item.id = val;
+        item.id = val[0];
+        item.name = val[1];
       }
       return updatedItem;
     })
@@ -228,7 +229,7 @@ export default class BaseForm extends Component {
 
     const multiStepper = (
       <div className='stepper'>
-        <Button type={step === 1 ? 'primary' : 'default'}>Step 1</Button>
+        <Button type={step === 1 ? 'primary' : 'default'} onClick={() => console.log('Hello')}>Step 1</Button>
         <Button type={step === 2 ? 'primary' : 'default'}>Step 2</Button>
         <Button type={step === 3 ? 'primary' : 'default'}>Step 3</Button>
         <Button type={step === 4 ? 'primary' : 'default'}>Step 4</Button>

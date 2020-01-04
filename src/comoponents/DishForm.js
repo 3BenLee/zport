@@ -1,9 +1,22 @@
+//@flow
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import { dishes } from '../mock-data';
 import './DishForm.css';
+import type { SelectedDishType } from './BaseForm';
 
-export default class DishForm extends Component {
+type Props = {
+  selectedRestaurant: string,
+  selectedDishes: Array<SelectedDishType>,
+  selectedMeal: string,
+  numbers: Array<number>,
+  handleAddDish: Function,
+  handleUpdateQuantity: Function,
+  handleRemoveField: Function,
+  handleAddInput: Function
+};
+
+export default class DishForm extends Component<Props> {
   render() {
     const {
       selectedRestaurant,
@@ -46,16 +59,16 @@ export default class DishForm extends Component {
               name={index}
               className='dish'
               required
-              key={i}
+              key={`${i.index}-${i.quantity}`}
               onChange={e => handleAddDish(i.index, e.target.value, null)}
             >
-              <option disabled='disabled' selected>
+              {/* <option disabled='disabled' selected>
                 **Select a Dish**
-              </option>
+              </option> */}
               {RestaurantDishList}
             </select>
             <select
-              name={`${index}-${i}`}
+              name={i.index}
               required
               key={index}
               onChange={e => handleUpdateQuantity(i.index, null, e.target.value)}

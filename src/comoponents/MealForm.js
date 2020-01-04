@@ -1,7 +1,14 @@
+//@flow
 import React from 'react';
 import './MealForm.css';
 
-const MealForm = (props) => {
+type Props = {
+  mealOptions: Array<string>,
+  numbers: Array<number>,
+  handleSelection: Function
+};
+
+const MealForm = (props: Props) => {
   const { mealOptions, numbers, handleSelection } = props;
 
   const mealSelections = mealOptions.map((meal, i) => (
@@ -19,12 +26,10 @@ const MealForm = (props) => {
   return (
     <>
       <h3 className='meal'>Please Select a Meal</h3>
-      <select
-        className='meal-selector'
-        name='selectedMeal'
-        required
-        onChange={handleSelection}>
-      <option disabled='disabled' selected>**Select an Meal**</option>
+      <select className='meal-selector' name='selectedMeal' required onChange={handleSelection}>
+        <option disabled='disabled' selected>
+          **Select an Meal**
+        </option>
         {mealSelections}
       </select>
       <br />
@@ -35,7 +40,7 @@ const MealForm = (props) => {
       </select>
       <br />
     </>
-  )
-}
+  );
+};
 
 export default MealForm;

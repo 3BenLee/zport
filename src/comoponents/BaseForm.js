@@ -12,7 +12,7 @@ type Props = {
   /* ... */
 };
 
-type selectDishesType = { index: number, id: string | null, quantity: number };
+export type SelectedDishType = { index: number, id: string, quantity: string };
 
 type State = {
   numbers: Array<number>,
@@ -21,7 +21,7 @@ type State = {
   people: number,
   selectedRestaurant: string,
   indexCounter: number,
-  selectedDishes: Array<selectDishesType>,
+  selectedDishes: Array<SelectedDishType>,
   errorOne: boolean,
   errorTwo: boolean
 };
@@ -37,7 +37,7 @@ export default class BaseForm extends Component<Props, State> {
       people: 0,
       selectedRestaurant: '',
       indexCounter: 1,
-      selectedDishes: [{ index: 0, id: null, quantity: 0 }],
+      selectedDishes: [{ index: 0, id: '', quantity: '' }],
       errorOne: false,
       errorTwo: false
     };
@@ -59,22 +59,24 @@ export default class BaseForm extends Component<Props, State> {
     const { step } = this.state;
     this.setState({ step: step - 1 });
   };
+
   /** Handles selections in Step 1 and 2 */
   handleSelection = (e: SyntheticInputEvent<HTMLInputElement>) => {
     let name = e.target.name;
     this.setState({ [name]: e.target.value });
-    this.setState({ selectedDishes: [{ index: 0, id: null, quantity: 0 }] });
+    this.setState({ selectedDishes: [{ index: 0, id: '', quantity: '' }] });
   };
+
   /** Adds a new input field in Step 3 */
   handleAddInput = () => {
     if (this.state.selectedDishes.length === 0) {
       this.setState(prevState => ({
-        selectedDishes: [...prevState.selectedDishes, { index: 0, id: null, quantity: 0 }],
+        selectedDishes: [...prevState.selectedDishes, { index: 0, id: '', quantity: '' }],
         indexCounter: this.state.indexCounter + 1
       }));
     } else {
       this.setState(prevState => ({
-        selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0 }],
+        selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: '', quantity: '' }],
         indexCounter: this.state.indexCounter + 1
       }));
     }
@@ -123,6 +125,7 @@ export default class BaseForm extends Component<Props, State> {
         return !selectedRestaurant ? this.setState({ errorOne: true }) : inputComplete();
       case 3:
         if (!selectedDishes.length) {
+          /// Add a check for the dish quantity = 0 here!!!!!
           return this.setState({ errorOne: true });
         } else if (new Set(dishesArray).size !== dishesArray.length) {
           return this.setState({ errorTwo: true });

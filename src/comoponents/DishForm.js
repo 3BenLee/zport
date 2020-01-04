@@ -4,9 +4,9 @@ import { dishes } from '../mock-data';
 import './DishForm.css';
 
 export default class DishForm extends Component {
-
   render() {
-    const { selectedRestaurant,
+    const {
+      selectedRestaurant,
       selectedDishes,
       selectedMeal,
       numbers,
@@ -16,7 +16,6 @@ export default class DishForm extends Component {
       handleAddInput
     } = this.props;
 
-
     const dishesList = dishes.filter(dish => dish.restaurant.includes(selectedRestaurant));
     const dishListByMeal = dishesList.filter(dish => dish.availableMeals.includes(selectedMeal));
 
@@ -24,8 +23,8 @@ export default class DishForm extends Component {
       return {
         dish: dish.name,
         id: dish.id
-      }
-    })
+      };
+    });
 
     const RestaurantDishList = filteredDishesList.map((dish, index) => (
       <option key={index} value={dish.id}>
@@ -43,11 +42,24 @@ export default class DishForm extends Component {
       <>
         {selectedDishes.map((i, index) => (
           <div className='dishes' key={index}>
-            <select name={index} className='dish' required key={i} onChange={(e) => handleAddDish(i.index , e.target.value)}>
-              <option disabled='disabled' selected>**Select a Dish**</option>
+            <select
+              name={index}
+              className='dish'
+              required
+              key={i}
+              onChange={e => handleAddDish(i.index, e.target.value, null)}
+            >
+              <option disabled='disabled' selected>
+                **Select a Dish**
+              </option>
               {RestaurantDishList}
             </select>
-            <select name={`${index}-${i}`} required key={index} onChange={(e) => handleUpdateQuantity(i.index , e.target.value)}>
+            <select
+              name={`${index}-${i}`}
+              required
+              key={index}
+              onChange={e => handleUpdateQuantity(i.index, null, e.target.value)}
+            >
               {quantitySelector}
             </select>
             <div className='minus'>

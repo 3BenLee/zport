@@ -1,3 +1,4 @@
+//@flow
 import React, { Component } from 'react';
 import MealForm from './MealForm';
 import RestaurantForm from './RestaurantForm';
@@ -7,8 +8,26 @@ import { Button } from 'antd';
 import './BaseForm.css';
 import MultiStepper from './MultiStepper';
 
-export default class BaseForm extends Component {
-  constructor(props) {
+type Props = {
+  /* ... */
+};
+
+type selectDishesType = { index: number, id: string | null, quantity: number };
+
+type State = {
+  numbers: Array<number>,
+  step: number,
+  selectedMeal: string,
+  people: number,
+  selectedRestaurant: string,
+  indexCounter: number,
+  selectedDishes: Array<selectDishesType>,
+  errorOne: boolean,
+  errorTwo: boolean
+};
+
+export default class BaseForm extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -24,8 +43,8 @@ export default class BaseForm extends Component {
     };
   }
 
-  /** Stepper */
-  handleMultiStepper = index => {
+  /** Makes the stepper buttons clickable to navigate to previous steps */
+  handleMultiStepper = (index: number) => {
     this.state.step > index && this.setState({ step: index });
   };
 
@@ -40,13 +59,13 @@ export default class BaseForm extends Component {
     const { step } = this.state;
     this.setState({ step: step - 1 });
   };
-
-  handleSelection = e => {
+  /** Handles selections in Step 1 and 2 */
+  handleSelection = (e: SyntheticInputEvent<HTMLInputElement>) => {
     let name = e.target.name;
     this.setState({ [name]: e.target.value });
     this.setState({ selectedDishes: [{ index: 0, id: null, quantity: 0 }] });
   };
-
+  /** Adds a new input field in Step 3 */
   handleAddInput = () => {
     if (this.state.selectedDishes.length === 0) {
       this.setState(prevState => ({
@@ -61,30 +80,24 @@ export default class BaseForm extends Component {
     }
   };
 
-  handleAddDish = (index, val) => {
+  /** Handles Updating the chosen dish and the dish quatities */
+  handleUpdateDishes = (index: number, id: string, quantity: string) => {
+    console.log('index and value', index, id, quantity);
     const { selectedDishes } = this.state;
     let updatedItem;
     updatedItem = selectedDishes.map(item => {
-      if (item.index === index) {
-        item.id = val[0];
-        item.name = val[1];
+      if (item.index === index && id) {
+        item.id = id;
+      }
+      if (item.index === index && quantity) {
+        item.quantity = quantity;
       }
       return updatedItem;
     });
   };
 
-  handleUpdateQuantity = (index, val) => {
-    const { selectedDishes } = this.state;
-    let updatedItem;
-    updatedItem = selectedDishes.map(item => {
-      if (item.index === index) {
-        item.quantity = val;
-      }
-      return updatedItem;
-    });
-  };
-
-  handleRemoveField = index => {
+  /** Remove an input on Step 3 */
+  handleRemoveField = (index: number) => {
     const { selectedDishes } = this.state;
 
     const newState = selectedDishes.filter(item => item.index !== index);
@@ -92,7 +105,7 @@ export default class BaseForm extends Component {
   };
 
   /** Input Validation */
-  validateInputs() {
+  validateInputs(num: number) {
     const { step, selectedMeal, people, selectedRestaurant, selectedDishes } = this.state;
 
     const inputComplete = () => {
@@ -120,12 +133,12 @@ export default class BaseForm extends Component {
         return '';
     }
   }
-
+  /** Render each seperate step form */
   renderSteps() {
-    const { step, numbers, selectedMeal, people, selectedRestaurant, selectedDishes, dishQuantity, index } = this.state;
+    const { step, numbers, selectedMeal, people, selectedRestaurant, selectedDishes } = this.state;
 
     const backButton = (
-      <Button className='nav-button' type='primary' onClick={(step === 2) | 3 | 4 && this.prevStep}>
+      <Button className='nav-button' type='primary' onClick={() => step > 1 && this.prevStep}>
         Back
       </Button>
     );
@@ -135,12 +148,7 @@ export default class BaseForm extends Component {
         const mealOptions = ['breakfast', 'lunch', 'dinner'];
         return (
           <>
-            <MealForm
-              handleSelection={this.handleSelection}
-              handlePeopleCount={this.handlePeopleCount}
-              mealOptions={mealOptions}
-              numbers={numbers}
-            />
+            <MealForm handleSelection={this.handleSelection} mealOptions={mealOptions} numbers={numbers} />
             <Button className='nav-button' type='primary' onClick={() => this.validateInputs(1)}>
               Next
             </Button>
@@ -160,14 +168,13 @@ export default class BaseForm extends Component {
         return (
           <>
             <DishForm
-              handleAddDish={this.handleAddDish}
+              handleAddDish={this.handleUpdateDishes}
               handleAddInput={this.handleAddInput}
               handleRemoveField={this.handleRemoveField}
-              handleUpdateQuantity={this.handleUpdateQuantity}
+              handleUpdateQuantity={this.handleUpdateDishes}
               selectedMeal={selectedMeal}
               selectedRestaurant={selectedRestaurant}
               numbers={numbers}
-              index={index}
               selectedDishes={selectedDishes}
             />
             {backButton}
@@ -180,10 +187,8 @@ export default class BaseForm extends Component {
         return (
           <>
             <ConfirmationForm
-              submit={this.handleSubmit}
               selectedMeal={selectedMeal}
               people={people}
-              dishQuantity={dishQuantity}
               selectedRestaurant={selectedRestaurant}
               selectedDishes={selectedDishes}
             />

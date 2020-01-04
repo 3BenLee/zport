@@ -5,10 +5,11 @@ import DishForm from './DishForm';
 import ConfirmationForm from './ConfirmationForm';
 import { Button } from 'antd';
 import './BaseForm.css';
+import MultiStepper from './MultiStepper';
 
 export default class BaseForm extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
 
     this.state = {
       numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -17,11 +18,16 @@ export default class BaseForm extends Component {
       people: 0,
       selectedRestaurant: '',
       indexCounter: 1,
-      selectedDishes: [{ index: 0, id: null, quantity: 0}],
+      selectedDishes: [{ index: 0, id: null, quantity: 0 }],
       errorOne: false,
       errorTwo: false
     };
   }
+
+  /** Stepper */
+  handleMultiStepper = index => {
+    this.state.step > index && this.setState({ step: index });
+  };
 
   /** Proceed to next step */
   nextStep = () => {
@@ -38,18 +44,18 @@ export default class BaseForm extends Component {
   handleSelection = e => {
     let name = e.target.name;
     this.setState({ [name]: e.target.value });
-    this.setState({selectedDishes: [{ index: 0, id: null, quantity: 0}]});
+    this.setState({ selectedDishes: [{ index: 0, id: null, quantity: 0 }] });
   };
 
   handleAddInput = () => {
     if (this.state.selectedDishes.length === 0) {
-    this.setState(prevState => ({
-      selectedDishes: [...prevState.selectedDishes, { index: 0, id: null, quantity: 0}],
-      indexCounter: this.state.indexCounter + 1
-    }));
+      this.setState(prevState => ({
+        selectedDishes: [...prevState.selectedDishes, { index: 0, id: null, quantity: 0 }],
+        indexCounter: this.state.indexCounter + 1
+      }));
     } else {
       this.setState(prevState => ({
-        selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0}],
+        selectedDishes: [...prevState.selectedDishes, { index: this.state.indexCounter, id: null, quantity: 0 }],
         indexCounter: this.state.indexCounter + 1
       }));
     }
@@ -57,36 +63,33 @@ export default class BaseForm extends Component {
 
   handleAddDish = (index, val) => {
     const { selectedDishes } = this.state;
-    console.log('handleAddDish', index, val);
     let updatedItem;
-    updatedItem = selectedDishes.map((item) => {
+    updatedItem = selectedDishes.map(item => {
       if (item.index === index) {
         item.id = val[0];
         item.name = val[1];
       }
       return updatedItem;
-    })
-  }
+    });
+  };
 
   handleUpdateQuantity = (index, val) => {
     const { selectedDishes } = this.state;
-    console.log('handleUpdateQuantity', index, val);
     let updatedItem;
-    updatedItem = selectedDishes.map((item) => {
+    updatedItem = selectedDishes.map(item => {
       if (item.index === index) {
         item.quantity = val;
       }
       return updatedItem;
-    })
-  }
+    });
+  };
 
-  handleRemoveField = (index) => {
+  handleRemoveField = index => {
     const { selectedDishes } = this.state;
-    console.log('handleRemoveField', index)
 
-    const newState = selectedDishes.filter(item => item.index !== index)
-    this.setState({selectedDishes: [...newState]})
-  }
+    const newState = selectedDishes.filter(item => item.index !== index);
+    this.setState({ selectedDishes: [...newState] });
+  };
 
   /** Input Validation */
   validateInputs() {
@@ -107,13 +110,10 @@ export default class BaseForm extends Component {
         return !selectedRestaurant ? this.setState({ errorOne: true }) : inputComplete();
       case 3:
         if (!selectedDishes.length) {
-          console.log('if', new Set(dishesArray).size, dishesArray.length)
           return this.setState({ errorOne: true });
         } else if (new Set(dishesArray).size !== dishesArray.length) {
-          console.log('else if', new Set(dishesArray).size, dishesArray.length)
           return this.setState({ errorTwo: true });
         } else {
-          console.log('else', new Set(dishesArray).size, dishesArray.length)
           return inputComplete();
         }
       default:
@@ -122,19 +122,10 @@ export default class BaseForm extends Component {
   }
 
   renderSteps() {
-    const {
-      step,
-      numbers,
-      selectedMeal,
-      people,
-      selectedRestaurant,
-      selectedDishes,
-      dishQuantity,
-      index
-    } = this.state;
+    const { step, numbers, selectedMeal, people, selectedRestaurant, selectedDishes, dishQuantity, index } = this.state;
 
     const backButton = (
-      <Button className='nav-button' type='primary' onClick={step === 2 | 3 | 4 && this.prevStep}>
+      <Button className='nav-button' type='primary' onClick={(step === 2) | 3 | 4 && this.prevStep}>
         Back
       </Button>
     );
@@ -158,10 +149,7 @@ export default class BaseForm extends Component {
       case 2:
         return (
           <>
-            <RestaurantForm
-              handleSelection={this.handleSelection}
-              selectedMeal={selectedMeal}
-            />
+            <RestaurantForm handleSelection={this.handleSelection} selectedMeal={selectedMeal} />
             {backButton}
             <Button className='nav-button' type='primary' onClick={() => this.validateInputs(2)}>
               Next
@@ -215,8 +203,8 @@ export default class BaseForm extends Component {
   }
 
   render() {
-    console.log('state', this.state)
-    const { step, errorOne, errorTwo } = this.state;
+    console.log('state', this.state);
+    const { errorOne, errorTwo } = this.state;
     const errorMessageOne = errorOne && <h3 className='error'>Please make sure to complete all inputs</h3>;
 
     const errorMessageTwo = errorTwo && (
@@ -227,18 +215,9 @@ export default class BaseForm extends Component {
       </>
     );
 
-    const multiStepper = (
-      <div className='stepper'>
-        <Button type={step === 1 ? 'primary' : 'default'} onClick={() => console.log('Hello')}>Step 1</Button>
-        <Button type={step === 2 ? 'primary' : 'default'}>Step 2</Button>
-        <Button type={step === 3 ? 'primary' : 'default'}>Step 3</Button>
-        <Button type={step === 4 ? 'primary' : 'default'}>Step 4</Button>
-      </div>
-    );
-
     return (
       <>
-        {multiStepper}
+        <MultiStepper handleMultiStepper={this.handleMultiStepper} step={this.state.step} />
         {this.renderSteps()}
         {errorMessageOne}
         {errorMessageTwo}

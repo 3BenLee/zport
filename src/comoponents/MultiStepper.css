@@ -1,0 +1,7 @@
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  width: 40%;
+  margin: auto;
+  padding: 40px 0;
+}
